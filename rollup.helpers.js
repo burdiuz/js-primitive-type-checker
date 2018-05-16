@@ -6,8 +6,8 @@ import json from 'rollup-plugin-json';
 import uglify from 'rollup-plugin-uglify';
 import { minify } from 'uglify-es';
 
-export const LIBRARY_FILE_NAME = 'lib'; // dummy, replace with project name
-export const LIBRARY_VAR_NAME = 'lib'; // dummy, replace with project name
+export const LIBRARY_FILE_NAME = 'primitive-type-checker';
+export const LIBRARY_VAR_NAME = 'PrimitiveTypeChecker';
 
 export const plugins = [
   resolve(),
@@ -22,8 +22,8 @@ export const plugins = [
     exclude: 'node_modules/**',
     externalHelpers: true,
     babelrc: false,
-  }), 
-  commonjs(), 
+  }),
+  commonjs(),
   json(),
 ];
 
@@ -40,7 +40,7 @@ export const baseConfig = {
     ],
     plugins,
   };
-  
+
 export const minConfig = {
     input: 'source/index.js',
     output: [
