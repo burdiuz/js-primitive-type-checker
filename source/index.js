@@ -5,10 +5,11 @@ import {
   GET_PROPERTY,
   RETURN_VALUE,
   SET_PROPERTY,
-  MERGE,
   buildPath,
   AsIs,
-} from '@actualwave/type-checkers/source/checkers/utils';
+} from '@actualwave/type-checkers/checkers';
+
+export const MERGE = '(Merge)';
 
 export const checkPrimitiveType = (action, types, name, type, errorReporter, sequence) => {
   if (!type) {
