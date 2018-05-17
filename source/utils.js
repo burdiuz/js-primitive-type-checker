@@ -1,3 +1,4 @@
+export const MERGE = '(Merge)';
 export const GET_PROPERTY = '(GetProperty)';
 export const SET_PROPERTY = '(SetProperty)';
 export const ARGUMENTS = '(Arguments)';
@@ -31,3 +32,30 @@ export const buildPath = (sequence) =>
 
     return `${str}["${name}"]`;
   }, '');
+
+export const checkPrimitiveType = (
+  action,
+  types,
+  name,
+  type,
+  errorReporter,
+  sequence,
+) => {
+  if (!type) {
+    return true;
+  }
+
+  const storedType = types[name];
+
+  if (storedType) {
+    if (storedType !== type) {
+      errorReporter(action, buildPath([...sequence, name]), storedType, type);
+
+      return false;
+    }
+  } else {
+    types[name] = type;
+  }
+
+  return true;
+};

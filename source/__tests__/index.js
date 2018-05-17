@@ -1,11 +1,12 @@
 import {
+  MERGE,
   GET_PROPERTY,
   SET_PROPERTY,
   RETURN_VALUE,
   ARGUMENTS,
-} from '@actualwave/type-checkers/checkers';
+} from '../utils';
 
-import PrimitiveTypeChecker, { MERGE } from '../index';
+import PrimitiveTypeChecker from '../index';
 
 describe('PrimitiveTypeChecker', () => {
   let reporter;

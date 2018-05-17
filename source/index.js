@@ -1,42 +1,15 @@
 import has from 'lodash.has';
 
 import {
+  MERGE,
   ARGUMENTS,
   GET_PROPERTY,
   RETURN_VALUE,
   SET_PROPERTY,
   buildPath,
   AsIs,
+  checkPrimitiveType,
 } from './utils';
-
-export const MERGE = '(Merge)';
-
-export const checkPrimitiveType = (
-  action,
-  types,
-  name,
-  type,
-  errorReporter,
-  sequence,
-) => {
-  if (!type) {
-    return true;
-  }
-
-  const storedType = types[name];
-
-  if (storedType) {
-    if (storedType !== type) {
-      errorReporter(action, buildPath([...sequence, name]), storedType, type);
-
-      return false;
-    }
-  } else {
-    types[name] = type;
-  }
-
-  return true;
-};
 
 export const mergeConfigs = ({ types, errorReporter }, source, names = []) => {
   const sourceTypes = source.types;

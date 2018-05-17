@@ -1096,6 +1096,7 @@
 
 	var lodash_has = has;
 
+	const MERGE = '(Merge)';
 	const GET_PROPERTY = '(GetProperty)';
 	const SET_PROPERTY = '(SetProperty)';
 	const ARGUMENTS = '(Arguments)';
@@ -1128,8 +1129,6 @@
 
 	  return `${str}["${name}"]`;
 	}, '');
-
-	const MERGE = '(Merge)';
 
 	const checkPrimitiveType = (action, types, name, type, errorReporter, sequence) => {
 	  if (!type) {
@@ -1250,8 +1249,6 @@
 	  }
 	}
 
-	exports.MERGE = MERGE;
-	exports.checkPrimitiveType = checkPrimitiveType;
 	exports.mergeConfigs = mergeConfigs;
 	exports.getTypeString = getTypeString;
 	exports.propertyCheckerFactory = propertyCheckerFactory;
