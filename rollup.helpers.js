@@ -11,7 +11,7 @@ export const LIBRARY_VAR_NAME = 'PrimitiveTypeChecker';
 
 export const plugins = [
   resolve(),
-  //flow(),
+  // flow(),
   babel({
     plugins: [
       'babel-plugin-transform-class-properties',
@@ -27,33 +27,50 @@ export const plugins = [
   json(),
 ];
 
+const createLibPartConfig = (source, destination) => ({
+  input: `source/${source}.js`,
+  output: [
+    {
+      file: `${destination}.js`,
+      sourcemap: true,
+      exports: 'named',
+      format: 'cjs',
+    },
+  ],
+  plugins,
+});
+
+export const utilConfigs = [
+  createLibPartConfig('utils', 'utils'),
+];
+
 export const baseConfig = {
-    input: 'source/index.js',
-    output: [
-      {
-        file: `dist/${LIBRARY_FILE_NAME}.js`,
-        sourcemap: true,
-        exports: 'named',
-        name: LIBRARY_VAR_NAME,
-        format: 'umd',
-      },
-    ],
-    plugins,
-  };
+  input: 'source/index.js',
+  output: [
+    {
+      file: `dist/${LIBRARY_FILE_NAME}.js`,
+      sourcemap: true,
+      exports: 'named',
+      name: LIBRARY_VAR_NAME,
+      format: 'umd',
+    },
+  ],
+  plugins,
+};
 
 export const minConfig = {
-    input: 'source/index.js',
-    output: [
-      {
-        file: `dist/${LIBRARY_FILE_NAME}.min.js`,
-        sourcemap: true,
-        exports: 'named',
-        name: LIBRARY_VAR_NAME,
-        format: 'umd',
-      },
-    ],
-    plugins: [
-      ...plugins,
-      uglify({}, minify),
-    ],
-  };
+  input: 'source/index.js',
+  output: [
+    {
+      file: `dist/${LIBRARY_FILE_NAME}.min.js`,
+      sourcemap: true,
+      exports: 'named',
+      name: LIBRARY_VAR_NAME,
+      format: 'umd',
+    },
+  ],
+  plugins: [
+    ...plugins,
+    uglify({}, minify),
+  ],
+};

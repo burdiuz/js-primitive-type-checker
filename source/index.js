@@ -7,11 +7,18 @@ import {
   SET_PROPERTY,
   buildPath,
   AsIs,
-} from '@actualwave/type-checkers/checkers';
+} from './utils';
 
 export const MERGE = '(Merge)';
 
-export const checkPrimitiveType = (action, types, name, type, errorReporter, sequence) => {
+export const checkPrimitiveType = (
+  action,
+  types,
+  name,
+  type,
+  errorReporter,
+  sequence,
+) => {
   if (!type) {
     return true;
   }
@@ -40,7 +47,12 @@ export const mergeConfigs = ({ types, errorReporter }, source, names = []) => {
       const targetType = types[name];
 
       if (sourceType && targetType && targetType !== sourceType) {
-        errorReporter(MERGE, buildPath([...names, name]), targetType, sourceType);
+        errorReporter(
+          MERGE,
+          buildPath([...names, name]),
+          targetType,
+          sourceType,
+        );
       } else {
         types[name] = sourceType;
       }
@@ -60,18 +72,28 @@ export const getTypeString = (value) => {
   return typeof value;
 };
 
-const getPropertyChecker = (action) => {
+export const propertyCheckerFactory = (action) => {
   function checkValueType(target, name, value, config, sequence) {
     const { types, errorReporter } = config;
     const type = this.getTypeString(value);
 
-    return checkPrimitiveType(action, types, name, type, errorReporter, sequence);
-  };
+    return checkPrimitiveType(
+      action,
+      types,
+      name,
+      type,
+      errorReporter,
+      sequence,
+    );
+  }
 
   return checkValueType;
 };
 
-export class PrimitiveTypeChecker {
+const getPropertyChecker = propertyCheckerFactory(GET_PROPERTY);
+const setPropertyChecker = propertyCheckerFactory(SET_PROPERTY);
+
+class PrimitiveTypeChecker {
   collectTypesOnInit = true;
   getTypeString = getTypeString;
   mergeConfigs = mergeConfigs;
@@ -82,10 +104,9 @@ export class PrimitiveTypeChecker {
     if (cachedTypes) {
       types = cachedTypes;
     } else if (this.collectTypesOnInit) {
-      Object.keys(target)
-        .forEach((key) => {
-          types[key] = getTypeString(target[key]);
-        });
+      Object.keys(target).forEach((key) => {
+        types[key] = getTypeString(target[key]);
+      });
     }
 
     return {
@@ -94,9 +115,13 @@ export class PrimitiveTypeChecker {
     };
   }
 
-  getProperty = getPropertyChecker(GET_PROPERTY);
+  getProperty(target, name, value, config, sequence) {
+    return getPropertyChecker.call(this, target, name, value, config, sequence);
+  }
 
-  setProperty = getPropertyChecker(SET_PROPERTY);
+  setProperty(target, name, value, config, sequence) {
+    return setPropertyChecker.call(this, target, name, value, config, sequence);
+  }
 
   arguments(target, thisArg, args, config, sequence) {
     const { types, errorReporter } = config;
@@ -106,7 +131,14 @@ export class PrimitiveTypeChecker {
 
     for (let index = 0; index < length; index++) {
       const type = this.getTypeString(args[index]);
-      const agrValid = checkPrimitiveType(ARGUMENTS, types, String(index), type, errorReporter, sequence);
+      const agrValid = checkPrimitiveType(
+        ARGUMENTS,
+        types,
+        String(index),
+        type,
+        errorReporter,
+        sequence,
+      );
 
       valid = agrValid && valid;
     }
@@ -118,7 +150,14 @@ export class PrimitiveTypeChecker {
     const { types, errorReporter } = config;
     const type = this.getTypeString(value);
 
-    return checkPrimitiveType(RETURN_VALUE, types, AsIs(RETURN_VALUE), type, errorReporter, sequence);
+    return checkPrimitiveType(
+      RETURN_VALUE,
+      types,
+      AsIs(RETURN_VALUE),
+      type,
+      errorReporter,
+      sequence,
+    );
   }
 }
 

@@ -1,10 +1,11 @@
-import PrimitiveTypeChecker, { MERGE } from '../index';
 import {
   GET_PROPERTY,
   SET_PROPERTY,
   RETURN_VALUE,
   ARGUMENTS,
 } from '@actualwave/type-checkers/checkers';
+
+import PrimitiveTypeChecker, { MERGE } from '../index';
 
 describe('PrimitiveTypeChecker', () => {
   let reporter;
@@ -183,10 +184,24 @@ describe('PrimitiveTypeChecker', () => {
 
       it('should call error reporter with MERGE error', () => {
         expect(reporter).toHaveBeenCalledTimes(3);
-        expect(reporter).toHaveBeenCalledWith(MERGE, 'numberValue', 'string', 'number');
-        expect(reporter).toHaveBeenCalledWith(MERGE, 'stringValue', 'boolean', 'string');
-        expect(reporter).toHaveBeenCalledWith(MERGE, 'booleanValue', 'number', 'boolean');
-
+        expect(reporter).toHaveBeenCalledWith(
+          MERGE,
+          'numberValue',
+          'string',
+          'number',
+        );
+        expect(reporter).toHaveBeenCalledWith(
+          MERGE,
+          'stringValue',
+          'boolean',
+          'string',
+        );
+        expect(reporter).toHaveBeenCalledWith(
+          MERGE,
+          'booleanValue',
+          'number',
+          'boolean',
+        );
       });
 
       it('should generate new config', () => {
@@ -208,7 +223,10 @@ describe('PrimitiveTypeChecker', () => {
     describe('When value of valid type', () => {
       beforeEach(() => {
         typeChecker.getProperty(target, 'stringValue', '123', config, []);
-        typeChecker.getProperty(target, 'numberValue', 0, config, ['parent', 'target']);
+        typeChecker.getProperty(target, 'numberValue', 0, config, [
+          'parent',
+          'target',
+        ]);
       });
 
       it('should not report any errors', () => {
@@ -219,12 +237,20 @@ describe('PrimitiveTypeChecker', () => {
     describe('When value of invalid type', () => {
       beforeEach(() => {
         typeChecker.getProperty(target, 'stringValue', 123, config, []);
-        typeChecker.getProperty(target, 'booleanValue', 0, config, ['parent', 'target']);
+        typeChecker.getProperty(target, 'booleanValue', 0, config, [
+          'parent',
+          'target',
+        ]);
       });
 
       it('should not report any errors', () => {
         expect(reporter).toHaveBeenCalledTimes(2);
-        expect(reporter).toHaveBeenCalledWith(GET_PROPERTY, 'stringValue', 'string', 'number');
+        expect(reporter).toHaveBeenCalledWith(
+          GET_PROPERTY,
+          'stringValue',
+          'string',
+          'number',
+        );
         expect(reporter).toHaveBeenCalledWith(
           GET_PROPERTY,
           'parent.target.booleanValue',
@@ -239,7 +265,10 @@ describe('PrimitiveTypeChecker', () => {
     describe('When value of valid type', () => {
       beforeEach(() => {
         typeChecker.setProperty(target, 'stringValue', '123', config, []);
-        typeChecker.setProperty(target, 'numberValue', 0, config, ['parent', 'target']);
+        typeChecker.setProperty(target, 'numberValue', 0, config, [
+          'parent',
+          'target',
+        ]);
       });
 
       it('should not report any errors', () => {
@@ -250,7 +279,10 @@ describe('PrimitiveTypeChecker', () => {
     describe('When value of invalid type', () => {
       beforeEach(() => {
         typeChecker.setProperty(target, 'booleanValue', '', config, []);
-        typeChecker.setProperty(target, 'numberValue', '123', config, ['parent', 'target']);
+        typeChecker.setProperty(target, 'numberValue', '123', config, [
+          'parent',
+          'target',
+        ]);
       });
 
       it('should not report any errors', () => {
@@ -278,7 +310,10 @@ describe('PrimitiveTypeChecker', () => {
         typeChecker.arguments(target, target, [false, 0, ''], config, []);
         // check
         typeChecker.arguments(target, target, [true, 1, 'abc'], config, []);
-        typeChecker.arguments(target, target, [false, -1, ''], config, ['parent', 'target']);
+        typeChecker.arguments(target, target, [false, -1, ''], config, [
+          'parent',
+          'target',
+        ]);
       });
 
       it('should not report any errors', () => {
@@ -291,13 +326,27 @@ describe('PrimitiveTypeChecker', () => {
         // init
         typeChecker.arguments(target, target, [false, 0, ''], config, []);
         // check
-        typeChecker.arguments(target, target, [true, '0', 'my string'], config, []);
-        typeChecker.arguments(target, target, ['', 1, null], config, ['parent', 'target']);
+        typeChecker.arguments(
+          target,
+          target,
+          [true, '0', 'my string'],
+          config,
+          [],
+        );
+        typeChecker.arguments(target, target, ['', 1, null], config, [
+          'parent',
+          'target',
+        ]);
       });
 
       it('should not report any errors', () => {
         expect(reporter).toHaveBeenCalledTimes(3);
-        expect(reporter).toHaveBeenCalledWith(ARGUMENTS, '[1]', 'number', 'string');
+        expect(reporter).toHaveBeenCalledWith(
+          ARGUMENTS,
+          '[1]',
+          'number',
+          'string',
+        );
         expect(reporter).toHaveBeenCalledWith(
           ARGUMENTS,
           'parent.target[0]',
@@ -321,7 +370,10 @@ describe('PrimitiveTypeChecker', () => {
         typeChecker.returnValue(target, target, 'my string', config, []);
         // checks
         typeChecker.returnValue(target, target, '', config, []);
-        typeChecker.returnValue(target, target, '123', config, ['parent', 'target']);
+        typeChecker.returnValue(target, target, '123', config, [
+          'parent',
+          'target',
+        ]);
       });
 
       it('should not report any errors', () => {
@@ -335,7 +387,10 @@ describe('PrimitiveTypeChecker', () => {
         typeChecker.returnValue(target, target, false, config, []);
         // checks
         typeChecker.returnValue(target, target, 0, config, []);
-        typeChecker.returnValue(target, target, '', config, ['parent', 'target']);
+        typeChecker.returnValue(target, target, '', config, [
+          'parent',
+          'target',
+        ]);
       });
 
       it('should not report any errors', () => {

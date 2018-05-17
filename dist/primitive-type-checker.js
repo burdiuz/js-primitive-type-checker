@@ -1119,19 +1119,16 @@
 
 	const buildPath = sequence => sequence.reduce((str, name) => {
 	  if (name instanceof AsIs) {
-	    str = `${str}${name}`;
+	    return `${str}${name}`;
 	  } else if (String(parseInt(name, 10)) === name) {
-	    str = `${str}[${name}]`;
+	    return `${str}[${name}]`;
 	  } else if (/^[a-z][\w$]*$/i.test(name)) {
-	    str = str ? `${str}.${name}` : name;
-	  } else {
-	    str = `${str}["${name}"]`;
+	    return str ? `${str}.${name}` : name;
 	  }
 
-	  return str;
+	  return `${str}["${name}"]`;
 	}, '');
 
-	const INDEX = '(Index)';
 	const MERGE = '(Merge)';
 
 	const checkPrimitiveType = (action, types, name, type, errorReporter, sequence) => {
@@ -1183,23 +1180,25 @@
 	  return typeof value;
 	};
 
-	const getPropertyChecker = action => {
+	const propertyCheckerFactory = action => {
 	  function checkValueType(target, name, value, config, sequence) {
 	    const { types, errorReporter } = config;
 	    const type = this.getTypeString(value);
 
 	    return checkPrimitiveType(action, types, name, type, errorReporter, sequence);
 	  }
+
 	  return checkValueType;
 	};
+
+	const getPropertyChecker = propertyCheckerFactory(GET_PROPERTY);
+	const setPropertyChecker = propertyCheckerFactory(SET_PROPERTY);
 
 	class PrimitiveTypeChecker {
 	  constructor() {
 	    this.collectTypesOnInit = true;
 	    this.getTypeString = getTypeString;
 	    this.mergeConfigs = mergeConfigs;
-	    this.getProperty = getPropertyChecker(GET_PROPERTY);
-	    this.setProperty = getPropertyChecker(SET_PROPERTY);
 	  }
 
 	  init(target, errorReporter, cachedTypes = null) {
@@ -1217,6 +1216,14 @@
 	      types,
 	      errorReporter
 	    };
+	  }
+
+	  getProperty(target, name, value, config, sequence) {
+	    return getPropertyChecker.call(this, target, name, value, config, sequence);
+	  }
+
+	  setProperty(target, name, value, config, sequence) {
+	    return setPropertyChecker.call(this, target, name, value, config, sequence);
 	  }
 
 	  arguments(target, thisArg, args, config, sequence) {
@@ -1243,12 +1250,11 @@
 	  }
 	}
 
-	exports.INDEX = INDEX;
 	exports.MERGE = MERGE;
 	exports.checkPrimitiveType = checkPrimitiveType;
 	exports.mergeConfigs = mergeConfigs;
 	exports.getTypeString = getTypeString;
-	exports.PrimitiveTypeChecker = PrimitiveTypeChecker;
+	exports.propertyCheckerFactory = propertyCheckerFactory;
 	exports.default = PrimitiveTypeChecker;
 
 	Object.defineProperty(exports, '__esModule', { value: true });
