@@ -98,7 +98,7 @@
     ]
   },
   "scripts": {
-    "start": "build",
+    "start": "npm run build",
     "build": "rollup --config",
     "build:watch": "rollup --config --watch \"./source\"",
     "lint": "./node_modules/.bin/eslint \"source/**/*.js\"",
