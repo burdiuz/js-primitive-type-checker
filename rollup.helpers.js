@@ -16,7 +16,7 @@ export const plugins = [
     plugins: [
       'babel-plugin-transform-class-properties',
       'babel-plugin-transform-flow-strip-types',
-      ['babel-plugin-transform-object-rest-spread', { 'useBuiltIns': true }],
+      ['babel-plugin-transform-object-rest-spread', { useBuiltIns: true }],
       'babel-plugin-external-helpers',
     ],
     exclude: 'node_modules/**',
@@ -39,6 +39,9 @@ export const baseConfig = {
     },
   ],
   plugins,
+  external: [
+    '@actualwave/hasOwn',
+  ],
 };
 
 export const minConfig = {

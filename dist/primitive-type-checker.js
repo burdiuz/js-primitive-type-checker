@@ -2,30 +2,9 @@
 
 Object.defineProperty(exports, '__esModule', { value: true });
 
-function unwrapExports (x) {
-	return x && x.__esModule && Object.prototype.hasOwnProperty.call(x, 'default') ? x['default'] : x;
-}
+function _interopDefault (ex) { return (ex && (typeof ex === 'object') && 'default' in ex) ? ex['default'] : ex; }
 
-function createCommonjsModule(fn, module) {
-	return module = { exports: {} }, fn(module, module.exports), module.exports;
-}
-
-var hasOwn_1 = createCommonjsModule(function (module, exports) {
-
-Object.defineProperty(exports, '__esModule', { value: true });
-
-const hasOwn = (
-  (has) =>
-  (target, property) =>
-  Boolean(target && has.call(target, property))
-)(Object.prototype.hasOwnProperty);
-
-exports.hasOwn = hasOwn;
-exports.default = hasOwn;
-});
-
-var hasOwn = unwrapExports(hasOwn_1);
-var hasOwn_2 = hasOwn_1.hasOwn;
+var hasOwn = _interopDefault(require('@actualwave/hasOwn'));
 
 const MERGE = '(Merge)';
 const GET_PROPERTY = '(GetProperty)';
