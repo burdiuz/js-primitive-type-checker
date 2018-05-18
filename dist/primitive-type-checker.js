@@ -170,5 +170,6 @@ exports.checkPrimitiveType = checkPrimitiveType;
 exports.mergeConfigs = mergeConfigs;
 exports.getTypeString = getTypeString;
 exports.propertyCheckerFactory = propertyCheckerFactory;
+exports.PrimitiveTypeChecker = PrimitiveTypeChecker;
 exports.default = PrimitiveTypeChecker;
 //# sourceMappingURL=primitive-type-checker.js.map

@@ -146,6 +146,7 @@ export {
   mergeConfigs,
   getTypeString,
   propertyCheckerFactory,
+  PrimitiveTypeChecker,
 };
 
 export default PrimitiveTypeChecker;

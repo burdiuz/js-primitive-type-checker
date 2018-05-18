@@ -6,7 +6,7 @@ import {
   ARGUMENTS,
 } from '../utils';
 
-import PrimitiveTypeChecker from '../index';
+import { PrimitiveTypeChecker } from '../index';
 
 describe('PrimitiveTypeChecker', () => {
   let reporter;
