@@ -13,7 +13,6 @@
     "node": true,
     "jest": true
   },
-  "files": [ "source/*.js" ],
   "rules": {
     "arrow-parens": [
       "error",

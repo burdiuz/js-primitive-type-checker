@@ -2,13 +2,84 @@
 
 Object.defineProperty(exports, '__esModule', { value: true });
 
-var utils = require('@actualwave/primitive-type-checker/utils');
+function unwrapExports (x) {
+	return x && x.__esModule && Object.prototype.hasOwnProperty.call(x, 'default') ? x['default'] : x;
+}
+
+function createCommonjsModule(fn, module) {
+	return module = { exports: {} }, fn(module, module.exports), module.exports;
+}
+
+var hasOwn_1 = createCommonjsModule(function (module, exports) {
+
+Object.defineProperty(exports, '__esModule', { value: true });
 
 const hasOwn = (
   (has) =>
   (target, property) =>
   Boolean(target && has.call(target, property))
 )(Object.prototype.hasOwnProperty);
+
+exports.hasOwn = hasOwn;
+exports.default = hasOwn;
+});
+
+var hasOwn = unwrapExports(hasOwn_1);
+var hasOwn_2 = hasOwn_1.hasOwn;
+
+const MERGE = '(Merge)';
+const GET_PROPERTY = '(GetProperty)';
+const SET_PROPERTY = '(SetProperty)';
+const ARGUMENTS = '(Arguments)';
+const RETURN_VALUE = '(ReturnValue)';
+
+function AsIs(value) {
+  if (this instanceof AsIs) {
+    this.value = value;
+  } else {
+    return new AsIs(value);
+  }
+}
+
+function asIs() {
+  return this.value;
+}
+
+AsIs.prototype.toString = asIs;
+AsIs.prototype.valueOf = asIs;
+AsIs.prototype[Symbol.toPrimitive] = asIs;
+
+const buildPath = sequence => sequence.reduce((str, name) => {
+  if (name instanceof AsIs) {
+    return `${str}${name}`;
+  } else if (String(parseInt(name, 10)) === name) {
+    return `${str}[${name}]`;
+  } else if (/^[a-z][\w$]*$/i.test(name)) {
+    return str ? `${str}.${name}` : name;
+  }
+
+  return `${str}["${name}"]`;
+}, '');
+
+const checkPrimitiveType = (action, types, name, type, errorReporter, sequence) => {
+  if (!type) {
+    return true;
+  }
+
+  const storedType = types[name];
+
+  if (storedType) {
+    if (storedType !== type) {
+      errorReporter(action, buildPath([...sequence, name]), storedType, type);
+
+      return false;
+    }
+  } else {
+    types[name] = type;
+  }
+
+  return true;
+};
 
 const mergeConfigs = ({ types, errorReporter }, source, names = []) => {
   const sourceTypes = source.types;
@@ -19,7 +90,7 @@ const mergeConfigs = ({ types, errorReporter }, source, names = []) => {
       const targetType = types[name];
 
       if (sourceType && targetType && targetType !== sourceType) {
-        errorReporter(utils.MERGE, utils.buildPath([...names, name]), targetType, sourceType);
+        errorReporter(MERGE, buildPath([...names, name]), targetType, sourceType);
       } else {
         types[name] = sourceType;
       }
@@ -44,14 +115,14 @@ const propertyCheckerFactory = action => {
     const { types, errorReporter } = config;
     const type = this.getTypeString(value);
 
-    return utils.checkPrimitiveType(action, types, name, type, errorReporter, sequence);
+    return checkPrimitiveType(action, types, name, type, errorReporter, sequence);
   }
 
   return checkValueType;
 };
 
-const getPropertyChecker = propertyCheckerFactory(utils.GET_PROPERTY);
-const setPropertyChecker = propertyCheckerFactory(utils.SET_PROPERTY);
+const getPropertyChecker = propertyCheckerFactory(GET_PROPERTY);
+const setPropertyChecker = propertyCheckerFactory(SET_PROPERTY);
 
 class PrimitiveTypeChecker {
   constructor() {
@@ -93,7 +164,7 @@ class PrimitiveTypeChecker {
 
     for (let index = 0; index < length; index++) {
       const type = this.getTypeString(args[index]);
-      const agrValid = utils.checkPrimitiveType(utils.ARGUMENTS, types, String(index), type, errorReporter, sequence);
+      const agrValid = checkPrimitiveType(ARGUMENTS, types, String(index), type, errorReporter, sequence);
 
       valid = agrValid && valid;
     }
@@ -105,10 +176,18 @@ class PrimitiveTypeChecker {
     const { types, errorReporter } = config;
     const type = this.getTypeString(value);
 
-    return utils.checkPrimitiveType(utils.RETURN_VALUE, types, utils.AsIs(utils.RETURN_VALUE), type, errorReporter, sequence);
+    return checkPrimitiveType(RETURN_VALUE, types, AsIs(RETURN_VALUE), type, errorReporter, sequence);
   }
 }
 
+exports.MERGE = MERGE;
+exports.ARGUMENTS = ARGUMENTS;
+exports.GET_PROPERTY = GET_PROPERTY;
+exports.RETURN_VALUE = RETURN_VALUE;
+exports.SET_PROPERTY = SET_PROPERTY;
+exports.buildPath = buildPath;
+exports.AsIs = AsIs;
+exports.checkPrimitiveType = checkPrimitiveType;
 exports.mergeConfigs = mergeConfigs;
 exports.getTypeString = getTypeString;
 exports.propertyCheckerFactory = propertyCheckerFactory;

@@ -9,9 +9,9 @@ import {
   buildPath,
   AsIs,
   checkPrimitiveType,
-} from '@actualwave/primitive-type-checker/utils';
+} from './utils';
 
-export const mergeConfigs = ({ types, errorReporter }, source, names = []) => {
+const mergeConfigs = ({ types, errorReporter }, source, names = []) => {
   const sourceTypes = source.types;
 
   for (const name in sourceTypes) {
@@ -35,7 +35,7 @@ export const mergeConfigs = ({ types, errorReporter }, source, names = []) => {
   return { types, errorReporter };
 };
 
-export const getTypeString = (value) => {
+const getTypeString = (value) => {
   if (value === undefined) {
     return '';
   } else if (value instanceof Array) {
@@ -45,7 +45,7 @@ export const getTypeString = (value) => {
   return typeof value;
 };
 
-export const propertyCheckerFactory = (action) => {
+const propertyCheckerFactory = (action) => {
   function checkValueType(target, name, value, config, sequence) {
     const { types, errorReporter } = config;
     const type = this.getTypeString(value);
@@ -133,5 +133,19 @@ class PrimitiveTypeChecker {
     );
   }
 }
+
+export {
+  MERGE,
+  ARGUMENTS,
+  GET_PROPERTY,
+  RETURN_VALUE,
+  SET_PROPERTY,
+  buildPath,
+  AsIs,
+  checkPrimitiveType,
+  mergeConfigs,
+  getTypeString,
+  propertyCheckerFactory,
+};
 
 export default PrimitiveTypeChecker;
