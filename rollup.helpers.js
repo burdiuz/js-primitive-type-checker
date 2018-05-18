@@ -10,7 +10,11 @@ export const LIBRARY_FILE_NAME = 'primitive-type-checker';
 export const LIBRARY_VAR_NAME = 'PrimitiveTypeChecker';
 
 export const plugins = [
-  resolve(),
+  resolve({
+    customResolveOptions: {
+      moduleDirectory: ['node_modules', 'source', 'utils'],
+    },
+  }),
   // flow(),
   babel({
     plugins: [
@@ -41,7 +45,7 @@ const createLibPartConfig = (source, destination) => ({
 });
 
 export const utilConfigs = [
-  createLibPartConfig('utils', 'utils'),
+  createLibPartConfig('utils', 'utils/index'),
 ];
 
 export const baseConfig = {
@@ -52,7 +56,11 @@ export const baseConfig = {
       sourcemap: true,
       exports: 'named',
       name: LIBRARY_VAR_NAME,
-      format: 'umd',
+      format: 'cjs',
+      external: [
+        '@actualwave/hasOwn',
+        '@actualwave/primitive-type-checker/utils',
+      ],
     },
   ],
   plugins,

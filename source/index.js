@@ -1,4 +1,4 @@
-import has from 'lodash.has';
+import hasOwn from '@actualwave/hasOwn';
 
 import {
   MERGE,
@@ -9,13 +9,13 @@ import {
   buildPath,
   AsIs,
   checkPrimitiveType,
-} from './utils';
+} from '@actualwave/primitive-type-checker/utils';
 
 export const mergeConfigs = ({ types, errorReporter }, source, names = []) => {
   const sourceTypes = source.types;
 
   for (const name in sourceTypes) {
-    if (has(sourceTypes, name)) {
+    if (hasOwn(sourceTypes, name)) {
       const sourceType = sourceTypes[name];
       const targetType = types[name];
 

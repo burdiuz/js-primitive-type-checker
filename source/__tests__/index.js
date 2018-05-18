@@ -244,7 +244,7 @@ describe('PrimitiveTypeChecker', () => {
         ]);
       });
 
-      it('should not report any errors', () => {
+      it('should report type errors', () => {
         expect(reporter).toHaveBeenCalledTimes(2);
         expect(reporter).toHaveBeenCalledWith(
           GET_PROPERTY,
@@ -286,7 +286,7 @@ describe('PrimitiveTypeChecker', () => {
         ]);
       });
 
-      it('should not report any errors', () => {
+      it('should report type errors', () => {
         expect(reporter).toHaveBeenCalledTimes(2);
         expect(reporter).toHaveBeenCalledWith(
           SET_PROPERTY,
@@ -340,7 +340,7 @@ describe('PrimitiveTypeChecker', () => {
         ]);
       });
 
-      it('should not report any errors', () => {
+      it('should report type errors', () => {
         expect(reporter).toHaveBeenCalledTimes(3);
         expect(reporter).toHaveBeenCalledWith(
           ARGUMENTS,
@@ -394,7 +394,7 @@ describe('PrimitiveTypeChecker', () => {
         ]);
       });
 
-      it('should not report any errors', () => {
+      it('should report type errors', () => {
         expect(reporter).toHaveBeenCalledTimes(2);
         expect(reporter).toHaveBeenCalledWith(
           RETURN_VALUE,
