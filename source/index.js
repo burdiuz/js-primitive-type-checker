@@ -1,4 +1,4 @@
-import hasOwn from '@actualwave/hasOwn';
+import hasOwn from '@actualwave/has-own';
 
 import {
   MERGE,
