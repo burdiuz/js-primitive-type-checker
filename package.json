@@ -1,22 +1,22 @@
 {
   "name": "@actualwave/primitive-type-checker",
-  "description": "",
-  "version": "0.1.9",
+  "description": "Runtime type check for pirimitive value types(uses typeof and identifies arrays).",
+  "version": "0.1.10",
   "main": "dist/primitive-type-checker.js",
   "keywords": [
     "js",
     "javascript"
   ],
-  "homepage": "https://github.com/burdiuz/js-lib-environment",
+  "homepage": "https://github.com/burdiuz/js-primitive-type-checker",
   "bugs": {
-    "url": "https://github.com/burdiuz/js-lib-environment/issues",
+    "url": "https://github.com/burdiuz/js-primitive-type-checker/issues",
     "email": "burdiuz@gmail.com"
   },
   "license": "MIT",
   "author": "Oleg Galaburda <burdiuz@gmail.com> (http://actualwave.com/)",
   "repository": {
     "type": "git",
-    "url": "https://github.com/burdiuz/js-lib-environment.git"
+    "url": "https://github.com/burdiuz/js-primitive-type-checker.git"
   },
   "dependencies": {
     "@actualwave/has-own": "0.0.1"
