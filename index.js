@@ -6,9 +6,7 @@ var typeCheckerSimpleReporting = require('@actualwave/type-checker-simple-report
 var typeCheckerLevelsStorage = require('@actualwave/type-checker-levels-storage');
 
 let errorReporter = typeCheckerSimpleReporting.ConsoleErrorReporter;
-
 const getErrorReporter = () => errorReporter;
-
 const setErrorReporter = value => {
   errorReporter = value;
 };
@@ -18,22 +16,20 @@ const GET_PROPERTY = '(GetProperty)';
 const SET_PROPERTY = '(SetProperty)';
 const ARGUMENTS = '(Arguments)';
 const RETURN_VALUE = '(ReturnValue)';
-
 const checkPrimitiveType = (action, storage, target, names, type) => {
   if (!type) {
     return true;
   }
 
-  const { lastName } = names;
-
+  const {
+    lastName
+  } = names;
   const storedType = storage.hasType(lastName);
 
   if (storedType) {
     if (storedType !== type) {
       const errorReporter = getErrorReporter();
-
       errorReporter(action, names.toString(), storedType, type);
-
       return false;
     }
   } else {
@@ -76,18 +72,17 @@ class PrimitiveTypeChecker {
 
     return type;
   }
-
   /**
    * FIXME add function to @actualwave/type-checker-levels-storage to merge configs
    * this function should accept storages and merge strategy callback which will
    * receive type info and decide what should be merged and what not
    */
+
+
   mergeConfigs(storage, sourceStorage, names) {
     const errorReporter = getErrorReporter();
-
     sourceStorage.copyTo(storage, null, (key, target, source) => {
       const targetFirstValue = target.values().next().value;
-
       source.forEach(sourceType => {
         if (!target.has(sourceType)) {
           target.add(sourceType);
@@ -97,36 +92,35 @@ class PrimitiveTypeChecker {
           }
         }
       });
-
       return target;
     });
   }
 
   getProperty(target, names, value, storage) {
     const type = this.getTypeValue(value);
-
     /**
      * FIXME this function also stores new type information, so it must receive target
      * or reporting level to work properly
      * or callback to store new type value
      */
+
     return checkPrimitiveType(GET_PROPERTY, storage, target, names, type);
   }
 
   setProperty(target, names, value, storage) {
     const type = this.getTypeValue(value);
-
     return checkPrimitiveType(SET_PROPERTY, storage, target, names, type);
   }
 
   arguments(target, names, args, storage) {
-    const { length } = args;
+    const {
+      length
+    } = args;
     let valid = true;
 
     for (let index = 0; index < length; index++) {
       const type = this.getTypeValue(args[index]);
       const agrValid = checkPrimitiveType(ARGUMENTS, storage, target, names.clone(index), type);
-
       valid = agrValid && valid;
     }
 
@@ -135,12 +129,11 @@ class PrimitiveTypeChecker {
 
   returnValue(target, names, value, storage) {
     const type = this.getTypeValue(value);
-
     const callNames = storage.clone();
     callNames.appendCustomValue(RETURN_VALUE);
-
     return checkPrimitiveType(RETURN_VALUE, storage, target, callNames, type);
   }
+
 }
 
 const createPrimitiveTypeChecker = collectTypesOnInit => new PrimitiveTypeChecker(collectTypesOnInit);
