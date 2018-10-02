@@ -1,5 +1,7 @@
 # JS-Primitive-Type-Checker
 
+[Play with Type Checkers](https://jsfiddle.net/actualwave/25oq0npy/)
+
 ### TODO
 1. When setting property and its type is not specified, read the property and get type from the value if available.
 

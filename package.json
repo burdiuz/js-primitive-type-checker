@@ -1,7 +1,7 @@
 {
   "name": "@actualwave/primitive-type-checker",
   "description": "Runtime type check for pirimitive value types(uses typeof and identifies arrays).",
-  "version": "0.1.10",
+  "version": "0.2.0",
   "main": "index.js",
   "keywords": [
     "js",
@@ -24,7 +24,7 @@
     "@actualwave/type-checker-simple-reporting": "0.0.2"
   },
   "peerDependencies": {
-    "@actualwave/type-checkers": "^0.1.12"
+    "@actualwave/type-checkers": "^0.2.0"
   },
   "devDependencies": {
     "@babel/core": "^7.1.2",
