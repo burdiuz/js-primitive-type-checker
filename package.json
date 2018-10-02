@@ -20,7 +20,7 @@
   },
   "dependencies": {
     "@actualwave/has-own": "0.0.1",
-    "@actualwave/type-checker-levels-storage": "https://github.com/burdiuz/js-type-checker-levels-storage.git",
+    "@actualwave/type-checker-levels-storage": "0.0.2",
     "@actualwave/type-checker-simple-reporting": "0.0.2"
   },
   "peerDependencies": {

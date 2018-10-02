@@ -13,19 +13,15 @@ export const checkPrimitiveType = (action, storage, target, names, type) => {
 
   const { lastName } = names;
 
-  const storedType = storage.hasType(lastName);
+  const missingType = storage.has(lastName) && !storage.hasValue(lastName, type);
 
-  if (storedType) {
-    if (storedType !== type) {
-      const errorReporter = getErrorReporter();
+  if (missingType) {
+    const errorReporter = getErrorReporter();
 
-      errorReporter(action, names.toString(), storedType, type);
-
-      return false;
-    }
-  } else {
-    storage.addFor(lastName, type, target);
+    errorReporter(action, names.toString(), storage.list(lastName).join(', '), type);
   }
 
-  return true;
+  storage.addFor(lastName, type, target);
+
+  return !missingType;
 };

@@ -62,19 +62,15 @@
 	  const {
 	    lastName
 	  } = names;
-	  const storedType = storage.hasType(lastName);
+	  const missingType = storage.has(lastName) && !storage.hasValue(lastName, type);
 
-	  if (storedType) {
-	    if (storedType !== type) {
-	      const errorReporter = getErrorReporter();
-	      errorReporter(action, names.toString(), storedType, type);
-	      return false;
-	    }
-	  } else {
-	    storage.addFor(lastName, type, target);
+	  if (missingType) {
+	    const errorReporter = getErrorReporter();
+	    errorReporter(action, names.toString(), storage.list(lastName).join(', '), type);
 	  }
 
-	  return true;
+	  storage.addFor(lastName, type, target);
+	  return !missingType;
 	};
 
 	var hasOwn_1 = createCommonjsModule(function (module, exports) {
@@ -94,6 +90,162 @@
 	unwrapExports(hasOwn_1);
 	var hasOwn_2 = hasOwn_1.hasOwn;
 
+	var mapOfSets = createCommonjsModule(function (module, exports) {
+
+	Object.defineProperty(exports, '__esModule', { value: true });
+
+	class MapOfSets {
+	  constructor() {
+	    this.storage = new Map();
+	  }
+	  /**
+	   * Check if key exists
+	   * @param {*} key
+	   */
+
+
+	  has(key) {
+	    const values = this.storage.get(key);
+	    return values && values.size;
+	  }
+	  /**
+	   * Check if value exists for key
+	   * @param {*} key
+	   * @param {*} value
+	   */
+
+
+	  hasValue(key, value) {
+	    const values = this.storage.get(key);
+	    return values && values.has(value);
+	  }
+	  /**
+	   * Get Set of values for key
+	   * @param {*} key
+	   */
+
+
+	  get(key) {
+	    return this.storage.get(key);
+	  }
+	  /**
+	   * List values for key, returns empty array if no key nor values stored
+	   * @param {*} key
+	   */
+
+
+	  list(key) {
+	    const values = this.storage.get(key);
+	    return values ? Array.from(values) : [];
+	  }
+	  /**
+	   * Call callback for each value of each key
+	   *  callback (value:*, key:*, storage:*):void
+	   * @param {Function} callback
+	   */
+
+
+	  forEach(callback) {
+	    this.storage.forEach((values, key) => values.forEach(value => callback(value, key, this)));
+	  }
+	  /**
+	   * Call callback function for each value of specified key
+	   *  callback (value:*, key:*, storage:*):void
+	   * @param {*} key
+	   * @param {Function} callback
+	   */
+
+
+	  eachValue(key, callback) {
+	    const values = this.storage.get(key);
+
+	    if (values) {
+	      values.forEach(value => callback(value, key, this));
+	    }
+	  }
+	  /**
+	   * Add to new value to key.
+	   * @param {*} key
+	   * @param {*} value
+	   */
+
+
+	  add(key, value) {
+	    if (!value) return;
+	    const values = this.storage.get(key);
+
+	    if (values) {
+	      values.add(value);
+	    } else {
+	      this.storage.set(key, new Set([value]));
+	    }
+	  }
+	  /**
+	   * Replace all values for key
+	   * @param {*} key
+	   * @param {Set} types
+	   */
+
+
+	  set(key, values) {
+	    if (!values || values.size === 0) {
+	      this.remove(key);
+	      return;
+	    }
+
+	    this.storage.set(key, new Set(values));
+	  }
+	  /**
+	   * Remove all values for key
+	   * @param {*} key
+	   */
+
+
+	  remove(key) {
+	    this.storage.delete(key);
+	  }
+	  /**
+	   * Remove single value from key
+	   * @param {*} key
+	   * @param {*} value
+	   */
+
+
+	  removeValue(key, value) {
+	    const values = this.storage.get(key);
+
+	    if (values) {
+	      values.delete(value);
+
+	      if (!values.size) {
+	        this.remove(key);
+	      }
+	    }
+	  }
+	  /**
+	   * Clone all key-value stores
+	   */
+
+
+	  clone() {
+	    const target = new MapOfSets();
+	    this.storage.forEach((values, key) => target.set(key, new Set(values)));
+	    return target;
+	  }
+
+	}
+	const createMapOfSets = () => new MapOfSets();
+
+	exports.MapOfSets = MapOfSets;
+	exports.createMapOfSets = createMapOfSets;
+	exports.default = MapOfSets;
+
+	});
+
+	unwrapExports(mapOfSets);
+	var mapOfSets_1 = mapOfSets.MapOfSets;
+	var mapOfSets_2 = mapOfSets.createMapOfSets;
+
 	var typeCheckerLevelsStorage = createCommonjsModule(function (module, exports) {
 
 	Object.defineProperty(exports, '__esModule', { value: true });
@@ -101,6 +253,7 @@
 	function _interopDefault (ex) { return (ex && (typeof ex === 'object') && 'default' in ex) ? ex['default'] : ex; }
 
 	var hasOwn = _interopDefault(hasOwn_1);
+	var MapOfSets = _interopDefault(mapOfSets);
 
 	/**
 	 * Do not check or report type inconsistency
@@ -186,10 +339,6 @@
 	 * @param {Set} source
 	 */
 	const defaultMergeStrategy = (key, target, source) => {
-	  if (!source || !target) {
-	    return source || target;
-	  }
-
 	  source.forEach(type => {
 	    if (!target.has(type)) {
 	      target.add(type);
@@ -199,36 +348,7 @@
 	  return target;
 	};
 
-	class TypeInfoStorage {
-	  constructor() {
-	    this.storage = new Map();
-	  }
-
-	  has(key) {
-	    const info = this.storage.get(key);
-
-	    return info && info.size;
-	  }
-
-	  hasType(key, type) {
-	    const info = this.storage.get(key);
-
-	    return info && info.has(type);
-	  }
-
-	  /**
-	   *
-	   * @param {*} key
-	   * @param {Function} callback
-	   */
-	  get(key, callback) {
-	    const info = this.storage.get(key);
-
-	    if (info) {
-	      info.forEach(type => callback(key, type));
-	    }
-	  }
-
+	class TypeInfoStorage extends MapOfSets {
 	  /**
 	   * Add to type information for specified key.
 	   * @param {*} key
@@ -240,20 +360,10 @@
 
 	    switch (level) {
 	      case REPORT_NEVER:
-	        this.storage.delete(key);
+	        this.remove(key);
 	        break;
 	      case REPORT_ONCE:
-	        {
-	          const types = this.storage.get(key);
-
-	          if (types) {
-	            if (!types.has(type)) {
-	              types.add(type);
-	            }
-	          } else {
-	            this.storage.set(key, new Set([type]));
-	          }
-	        }
+	        super.add(key, type);
 	        break;
 	      case REPORT_ALL:
 	      default:
@@ -280,11 +390,11 @@
 	   */
 	  set(key, types, level) {
 	    if (!types || types.size === 0 || level === REPORT_NEVER) {
-	      this.storage.delete(key);
+	      this.remove(key);
 	      return;
 	    }
 
-	    this.storage.set(key, types);
+	    super.set(key, types);
 	  }
 
 	  /**
@@ -339,6 +449,7 @@
 	exports.REPORT_NEVER = REPORT_NEVER;
 	exports.REPORT_ONCE = REPORT_ONCE;
 	exports.createTypesStorage = createTypesStorage;
+	exports.defaultMergeStrategy = defaultMergeStrategy;
 	exports.getGlobalReportingLevel = getGlobalReportingLevel;
 	exports.setGlobalReportingLevel = setGlobalReportingLevel;
 	exports.getReportingLevel = getReportingLevel;
@@ -351,16 +462,18 @@
 	var typeCheckerLevelsStorage_2 = typeCheckerLevelsStorage.REPORT_NEVER;
 	var typeCheckerLevelsStorage_3 = typeCheckerLevelsStorage.REPORT_ONCE;
 	var typeCheckerLevelsStorage_4 = typeCheckerLevelsStorage.createTypesStorage;
-	var typeCheckerLevelsStorage_5 = typeCheckerLevelsStorage.getGlobalReportingLevel;
-	var typeCheckerLevelsStorage_6 = typeCheckerLevelsStorage.setGlobalReportingLevel;
-	var typeCheckerLevelsStorage_7 = typeCheckerLevelsStorage.getReportingLevel;
-	var typeCheckerLevelsStorage_8 = typeCheckerLevelsStorage.setReportingLevel;
+	var typeCheckerLevelsStorage_5 = typeCheckerLevelsStorage.defaultMergeStrategy;
+	var typeCheckerLevelsStorage_6 = typeCheckerLevelsStorage.getGlobalReportingLevel;
+	var typeCheckerLevelsStorage_7 = typeCheckerLevelsStorage.setGlobalReportingLevel;
+	var typeCheckerLevelsStorage_8 = typeCheckerLevelsStorage.getReportingLevel;
+	var typeCheckerLevelsStorage_9 = typeCheckerLevelsStorage.setReportingLevel;
 
 	/* eslint-disable class-methods-use-this */
 
 	class PrimitiveTypeChecker {
-	  constructor(collectTypesOnInit = true) {
+	  constructor(collectTypesOnInit = true, enableGetChecker = true) {
 	    this.collectTypesOnInit = collectTypesOnInit;
+	    this.enableGetChecker = enableGetChecker;
 	  }
 
 	  init(target, cachedStorage = null) {
@@ -414,13 +527,11 @@
 	  }
 
 	  getProperty(target, names, value, storage) {
-	    const type = this.getTypeValue(value);
-	    /**
-	     * FIXME this function also stores new type information, so it must receive target
-	     * or reporting level to work properly
-	     * or callback to store new type value
-	     */
+	    if (!this.enableGetChecker) {
+	      return true;
+	    }
 
+	    const type = this.getTypeValue(value);
 	    return checkPrimitiveType(GET_PROPERTY, storage, target, names, type);
 	  }
 
@@ -446,14 +557,14 @@
 
 	  returnValue(target, names, value, storage) {
 	    const type = this.getTypeValue(value);
-	    const callNames = storage.clone();
+	    const callNames = names.clone();
 	    callNames.appendCustomValue(RETURN_VALUE);
 	    return checkPrimitiveType(RETURN_VALUE, storage, target, callNames, type);
 	  }
 
 	}
 
-	const createPrimitiveTypeChecker = collectTypesOnInit => new PrimitiveTypeChecker(collectTypesOnInit);
+	const createPrimitiveTypeChecker = (collectTypesOnInit = true, enableGetChecker = true) => new PrimitiveTypeChecker(collectTypesOnInit, enableGetChecker);
 
 	/* eslint-disable class-methods-use-this */
 

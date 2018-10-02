@@ -24,26 +24,23 @@ const checkPrimitiveType = (action, storage, target, names, type) => {
   const {
     lastName
   } = names;
-  const storedType = storage.hasType(lastName);
+  const missingType = storage.has(lastName) && !storage.hasValue(lastName, type);
 
-  if (storedType) {
-    if (storedType !== type) {
-      const errorReporter = getErrorReporter();
-      errorReporter(action, names.toString(), storedType, type);
-      return false;
-    }
-  } else {
-    storage.addFor(lastName, type, target);
+  if (missingType) {
+    const errorReporter = getErrorReporter();
+    errorReporter(action, names.toString(), storage.list(lastName).join(', '), type);
   }
 
-  return true;
+  storage.addFor(lastName, type, target);
+  return !missingType;
 };
 
 /* eslint-disable class-methods-use-this */
 
 class PrimitiveTypeChecker {
-  constructor(collectTypesOnInit = true) {
+  constructor(collectTypesOnInit = true, enableGetChecker = true) {
     this.collectTypesOnInit = collectTypesOnInit;
+    this.enableGetChecker = enableGetChecker;
   }
 
   init(target, cachedStorage = null) {
@@ -97,13 +94,11 @@ class PrimitiveTypeChecker {
   }
 
   getProperty(target, names, value, storage) {
-    const type = this.getTypeValue(value);
-    /**
-     * FIXME this function also stores new type information, so it must receive target
-     * or reporting level to work properly
-     * or callback to store new type value
-     */
+    if (!this.enableGetChecker) {
+      return true;
+    }
 
+    const type = this.getTypeValue(value);
     return checkPrimitiveType(GET_PROPERTY, storage, target, names, type);
   }
 
@@ -129,14 +124,14 @@ class PrimitiveTypeChecker {
 
   returnValue(target, names, value, storage) {
     const type = this.getTypeValue(value);
-    const callNames = storage.clone();
+    const callNames = names.clone();
     callNames.appendCustomValue(RETURN_VALUE);
     return checkPrimitiveType(RETURN_VALUE, storage, target, callNames, type);
   }
 
 }
 
-const createPrimitiveTypeChecker = collectTypesOnInit => new PrimitiveTypeChecker(collectTypesOnInit);
+const createPrimitiveTypeChecker = (collectTypesOnInit = true, enableGetChecker = true) => new PrimitiveTypeChecker(collectTypesOnInit, enableGetChecker);
 
 /* eslint-disable class-methods-use-this */
 

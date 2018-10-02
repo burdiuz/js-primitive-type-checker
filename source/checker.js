@@ -13,8 +13,9 @@ import {
 } from './utils';
 
 class PrimitiveTypeChecker {
-  constructor(collectTypesOnInit = true) {
+  constructor(collectTypesOnInit = true, enableGetChecker = true) {
     this.collectTypesOnInit = collectTypesOnInit;
+    this.enableGetChecker = enableGetChecker;
   }
 
   init(target, cachedStorage = null) {
@@ -72,13 +73,12 @@ class PrimitiveTypeChecker {
   }
 
   getProperty(target, names, value, storage) {
+    if (!this.enableGetChecker) {
+      return true;
+    }
+
     const type = this.getTypeValue(value);
 
-    /**
-     * FIXME this function also stores new type information, so it must receive target
-     * or reporting level to work properly
-     * or callback to store new type value
-     */
     return checkPrimitiveType(GET_PROPERTY, storage, target, names, type);
   }
 
@@ -105,14 +105,14 @@ class PrimitiveTypeChecker {
   returnValue(target, names, value, storage) {
     const type = this.getTypeValue(value);
 
-    const callNames = storage.clone();
+    const callNames = names.clone();
     callNames.appendCustomValue(RETURN_VALUE);
 
     return checkPrimitiveType(RETURN_VALUE, storage, target, callNames, type);
   }
 }
 
-export const createPrimitiveTypeChecker = (collectTypesOnInit) =>
-  new PrimitiveTypeChecker(collectTypesOnInit);
+export const createPrimitiveTypeChecker = (collectTypesOnInit = true, enableGetChecker = true) =>
+  new PrimitiveTypeChecker(collectTypesOnInit, enableGetChecker);
 
 export default PrimitiveTypeChecker;
