@@ -1,21 +1,58 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Example</title>
-  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css"
-        integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
-  <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.0/jquery.min.js"></script>
-  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"
-          integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS"
-          crossorigin="anonymous"></script>
+  <base href="/">
+  <link rel="stylesheet" href="https://unpkg.com/@actualwave/dom-console@latest/console.css">
+  <script src="https://unpkg.com/@actualwave/dom-console@latest/console.js"></script>
+  <script src="https://rawgit.com/burdiuz/js-type-checkers/master/dist/type-checkers.js"></script>
+  <script src="primitive-type-checker.js"></script>
   <style type="text/css">
   </style>
-  <script type="text/javascript">
-  </script>
 </head>
+
 <body>
-<h1>Library Project Environment base</h1>
 </body>
+<script type="text/javascript">
+  const { log, info, error } = DOMConsole.create(document.body);
+
+  const { wrap, unwrap, setDefaultTypeChecker } = TypeCheckers;
+
+  const { createPrimitiveTypeChecker, setErrorReporter } = PrimitiveTypeChecker;
+
+  setErrorReporter((action, name, required, received) => {
+    error(`${action}Error on "${name}" instead of "${required}" received "${received}"`);
+  });
+
+  setDefaultTypeChecker(createPrimitiveTypeChecker(true, false));
+
+  log('Primitive Type Checker:');
+
+  const source = {
+    myNum: 123,
+    myStr: 'my string',
+    myBool: true,
+  };
+
+  // const typed = wrap(source, null, { set: true });
+  const typed = wrap(source);
+
+  log('Source object:', typed);
+
+  log('Set properties with values of incorrect type:');
+  typed.myNum = '123';
+  typed.myBool = 0;
+
+  typed.myArray = [];
+  log('Set "myArray" to an empty array:', typed);
+
+  log('Set array to object:');
+  typed.myArray = {};
+
+  log('Reulting object:', typed);
+</script>
+
 </html>
