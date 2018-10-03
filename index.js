@@ -34,6 +34,19 @@ const checkPrimitiveType = (action, storage, target, names, type) => {
   storage.addFor(lastName, type, target);
   return !missingType;
 };
+const getTypeValue = value => {
+  if (value === undefined) {
+    return '';
+  }
+
+  const type = typeof value;
+
+  if (type === 'object' && value instanceof Array) {
+    return 'array';
+  }
+
+  return type;
+};
 
 /* eslint-disable class-methods-use-this */
 
@@ -57,17 +70,7 @@ class PrimitiveTypeChecker {
   }
 
   getTypeValue(value) {
-    if (value === undefined) {
-      return '';
-    }
-
-    const type = typeof value;
-
-    if (type === 'object' && value instanceof Array) {
-      return 'array';
-    }
-
-    return type;
+    return getTypeValue(value);
   }
   /**
    * FIXME add function to @actualwave/type-checker-levels-storage to merge configs
@@ -141,6 +144,7 @@ exports.GET_PROPERTY = GET_PROPERTY;
 exports.RETURN_VALUE = RETURN_VALUE;
 exports.SET_PROPERTY = SET_PROPERTY;
 exports.checkPrimitiveType = checkPrimitiveType;
+exports.getTypeValue = getTypeValue;
 exports.PrimitiveTypeChecker = PrimitiveTypeChecker;
 exports.createPrimitiveTypeChecker = createPrimitiveTypeChecker;
 exports.getErrorReporter = getErrorReporter;

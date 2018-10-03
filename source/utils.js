@@ -25,3 +25,17 @@ export const checkPrimitiveType = (action, storage, target, names, type) => {
 
   return !missingType;
 };
+
+export const getTypeValue = (value) => {
+  if (value === undefined) {
+    return '';
+  }
+
+  const type = typeof value;
+
+  if (type === 'object' && value instanceof Array) {
+    return 'array';
+  }
+
+  return type;
+};

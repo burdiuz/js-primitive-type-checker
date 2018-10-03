@@ -8,6 +8,7 @@ import {
   RETURN_VALUE,
   SET_PROPERTY,
   checkPrimitiveType,
+  getTypeValue,
 } from './utils';
 
 import PrimitiveTypeChecker, { createPrimitiveTypeChecker } from './checker';
@@ -19,6 +20,7 @@ export {
   RETURN_VALUE,
   SET_PROPERTY,
   checkPrimitiveType,
+  getTypeValue,
   PrimitiveTypeChecker,
   createPrimitiveTypeChecker,
   getErrorReporter,

@@ -10,6 +10,7 @@ import {
   RETURN_VALUE,
   SET_PROPERTY,
   checkPrimitiveType,
+  getTypeValue,
 } from './utils';
 
 class PrimitiveTypeChecker {
@@ -34,17 +35,7 @@ class PrimitiveTypeChecker {
   }
 
   getTypeValue(value) {
-    if (value === undefined) {
-      return '';
-    }
-
-    const type = typeof value;
-
-    if (type === 'object' && value instanceof Array) {
-      return 'array';
-    }
-
-    return type;
+    return getTypeValue(value);
   }
 
   /**
