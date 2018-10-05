@@ -72,6 +72,10 @@ class PrimitiveTypeChecker {
   getTypeValue(value) {
     return getTypeValue(value);
   }
+
+  checkType(action, storage, target, names, type) {
+    return checkPrimitiveType(action, storage, target, names, type);
+  }
   /**
    * FIXME add function to @actualwave/type-checker-levels-storage to merge configs
    * this function should accept storages and merge strategy callback which will
@@ -102,12 +106,12 @@ class PrimitiveTypeChecker {
     }
 
     const type = this.getTypeValue(value);
-    return checkPrimitiveType(GET_PROPERTY, storage, target, names, type);
+    return this.checkType(GET_PROPERTY, storage, target, names, type);
   }
 
   setProperty(target, names, value, storage) {
     const type = this.getTypeValue(value);
-    return checkPrimitiveType(SET_PROPERTY, storage, target, names, type);
+    return this.checkType(SET_PROPERTY, storage, target, names, type);
   }
 
   arguments(target, names, args, storage) {
@@ -118,7 +122,7 @@ class PrimitiveTypeChecker {
 
     for (let index = 0; index < length; index++) {
       const type = this.getTypeValue(args[index]);
-      const agrValid = checkPrimitiveType(ARGUMENTS, storage, target, names.clone(index), type);
+      const agrValid = this.checkType(ARGUMENTS, storage, target, names.clone(index), type);
       valid = agrValid && valid;
     }
 
@@ -129,7 +133,7 @@ class PrimitiveTypeChecker {
     const type = this.getTypeValue(value);
     const callNames = names.clone();
     callNames.appendCustomValue(RETURN_VALUE);
-    return checkPrimitiveType(RETURN_VALUE, storage, target, callNames, type);
+    return this.checkType(RETURN_VALUE, storage, target, callNames, type);
   }
 
 }
