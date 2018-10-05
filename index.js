@@ -140,8 +140,13 @@ class PrimitiveTypeChecker {
 
 const createPrimitiveTypeChecker = (collectTypesOnInit = true, enableGetChecker = true) => new PrimitiveTypeChecker(collectTypesOnInit, enableGetChecker);
 
-/* eslint-disable class-methods-use-this */
-
+exports.REPORT_ALL = typeCheckerLevelsStorage.REPORT_ALL;
+exports.REPORT_NEVER = typeCheckerLevelsStorage.REPORT_NEVER;
+exports.REPORT_ONCE = typeCheckerLevelsStorage.REPORT_ONCE;
+exports.getGlobalReportingLevel = typeCheckerLevelsStorage.getGlobalReportingLevel;
+exports.setGlobalReportingLevel = typeCheckerLevelsStorage.setGlobalReportingLevel;
+exports.getReportingLevel = typeCheckerLevelsStorage.getReportingLevel;
+exports.setReportingLevel = typeCheckerLevelsStorage.setReportingLevel;
 exports.MERGE = MERGE;
 exports.ARGUMENTS = ARGUMENTS;
 exports.GET_PROPERTY = GET_PROPERTY;

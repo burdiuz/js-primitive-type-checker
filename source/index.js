@@ -1,4 +1,13 @@
-/* eslint-disable class-methods-use-this */
+import {
+  REPORT_ALL,
+  REPORT_NEVER,
+  REPORT_ONCE,
+  getGlobalReportingLevel,
+  setGlobalReportingLevel,
+  getReportingLevel,
+  setReportingLevel,
+} from '@actualwave/type-checker-levels-storage';
+
 import { getErrorReporter, setErrorReporter } from './error-reporter';
 
 import {
@@ -25,4 +34,12 @@ export {
   createPrimitiveTypeChecker,
   getErrorReporter,
   setErrorReporter,
+
+  REPORT_ALL,
+  REPORT_NEVER,
+  REPORT_ONCE,
+  getGlobalReportingLevel,
+  setGlobalReportingLevel,
+  getReportingLevel,
+  setReportingLevel,
 };

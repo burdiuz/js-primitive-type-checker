@@ -12,80 +12,6 @@
 		return module = { exports: {} }, fn(module, module.exports), module.exports;
 	}
 
-	var typeCheckerSimpleReporting = createCommonjsModule(function (module, exports) {
-
-	Object.defineProperty(exports, '__esModule', { value: true });
-
-	/* eslint-disable import/prefer-default-export */
-
-	const constructErrorString = (action, name, required, received) => `${action}Error on "${name}" instead of "${required}" received "${received}"`;
-
-	/* eslint-disable no-console */
-
-	const ConsoleErrorReporter = (action, name, requiredTypeString, actualTypeString) => console.error(constructErrorString(action, name, requiredTypeString, actualTypeString));
-
-	const ConsoleWarnReporter = (action, name, requiredTypeString, actualTypeString) => console.warn(constructErrorString(action, name, requiredTypeString, actualTypeString));
-
-	/* eslint-disable import/prefer-default-export */
-
-	const ThrowErrorReporter = (action, name, requiredTypeString, receivedTypeString) => {
-	  throw new Error(constructErrorString(action, name, requiredTypeString, receivedTypeString));
-	};
-
-	exports.ConsoleErrorReporter = ConsoleErrorReporter;
-	exports.ConsoleWarnReporter = ConsoleWarnReporter;
-	exports.ThrowErrorReporter = ThrowErrorReporter;
-
-	});
-
-	unwrapExports(typeCheckerSimpleReporting);
-	var typeCheckerSimpleReporting_1 = typeCheckerSimpleReporting.ConsoleErrorReporter;
-	var typeCheckerSimpleReporting_2 = typeCheckerSimpleReporting.ConsoleWarnReporter;
-	var typeCheckerSimpleReporting_3 = typeCheckerSimpleReporting.ThrowErrorReporter;
-
-	let errorReporter = typeCheckerSimpleReporting_1;
-	const getErrorReporter = () => errorReporter;
-	const setErrorReporter = value => {
-	  errorReporter = value;
-	};
-
-	const MERGE = '(Merge)';
-	const GET_PROPERTY = '(GetProperty)';
-	const SET_PROPERTY = '(SetProperty)';
-	const ARGUMENTS = '(Arguments)';
-	const RETURN_VALUE = '(ReturnValue)';
-	const checkPrimitiveType = (action, storage, target, names, type) => {
-	  if (!type) {
-	    return true;
-	  }
-
-	  const {
-	    lastName
-	  } = names;
-	  const missingType = storage.has(lastName) && !storage.hasValue(lastName, type);
-
-	  if (missingType) {
-	    const errorReporter = getErrorReporter();
-	    errorReporter(action, names.toString(), storage.list(lastName).join(', '), type);
-	  }
-
-	  storage.addFor(lastName, type, target);
-	  return !missingType;
-	};
-	const getTypeValue = value => {
-	  if (value === undefined) {
-	    return '';
-	  }
-
-	  const type = typeof value;
-
-	  if (type === 'object' && value instanceof Array) {
-	    return 'array';
-	  }
-
-	  return type;
-	};
-
 	var hasOwn_1 = createCommonjsModule(function (module, exports) {
 
 	Object.defineProperty(exports, '__esModule', { value: true });
@@ -481,6 +407,80 @@
 	var typeCheckerLevelsStorage_8 = typeCheckerLevelsStorage.getReportingLevel;
 	var typeCheckerLevelsStorage_9 = typeCheckerLevelsStorage.setReportingLevel;
 
+	var typeCheckerSimpleReporting = createCommonjsModule(function (module, exports) {
+
+	Object.defineProperty(exports, '__esModule', { value: true });
+
+	/* eslint-disable import/prefer-default-export */
+
+	const constructErrorString = (action, name, required, received) => `${action}Error on "${name}" instead of "${required}" received "${received}"`;
+
+	/* eslint-disable no-console */
+
+	const ConsoleErrorReporter = (action, name, requiredTypeString, actualTypeString) => console.error(constructErrorString(action, name, requiredTypeString, actualTypeString));
+
+	const ConsoleWarnReporter = (action, name, requiredTypeString, actualTypeString) => console.warn(constructErrorString(action, name, requiredTypeString, actualTypeString));
+
+	/* eslint-disable import/prefer-default-export */
+
+	const ThrowErrorReporter = (action, name, requiredTypeString, receivedTypeString) => {
+	  throw new Error(constructErrorString(action, name, requiredTypeString, receivedTypeString));
+	};
+
+	exports.ConsoleErrorReporter = ConsoleErrorReporter;
+	exports.ConsoleWarnReporter = ConsoleWarnReporter;
+	exports.ThrowErrorReporter = ThrowErrorReporter;
+
+	});
+
+	unwrapExports(typeCheckerSimpleReporting);
+	var typeCheckerSimpleReporting_1 = typeCheckerSimpleReporting.ConsoleErrorReporter;
+	var typeCheckerSimpleReporting_2 = typeCheckerSimpleReporting.ConsoleWarnReporter;
+	var typeCheckerSimpleReporting_3 = typeCheckerSimpleReporting.ThrowErrorReporter;
+
+	let errorReporter = typeCheckerSimpleReporting_1;
+	const getErrorReporter = () => errorReporter;
+	const setErrorReporter = value => {
+	  errorReporter = value;
+	};
+
+	const MERGE = '(Merge)';
+	const GET_PROPERTY = '(GetProperty)';
+	const SET_PROPERTY = '(SetProperty)';
+	const ARGUMENTS = '(Arguments)';
+	const RETURN_VALUE = '(ReturnValue)';
+	const checkPrimitiveType = (action, storage, target, names, type) => {
+	  if (!type) {
+	    return true;
+	  }
+
+	  const {
+	    lastName
+	  } = names;
+	  const missingType = storage.has(lastName) && !storage.hasValue(lastName, type);
+
+	  if (missingType) {
+	    const errorReporter = getErrorReporter();
+	    errorReporter(action, names.toString(), storage.list(lastName).join(', '), type);
+	  }
+
+	  storage.addFor(lastName, type, target);
+	  return !missingType;
+	};
+	const getTypeValue = value => {
+	  if (value === undefined) {
+	    return '';
+	  }
+
+	  const type = typeof value;
+
+	  if (type === 'object' && value instanceof Array) {
+	    return 'array';
+	  }
+
+	  return type;
+	};
+
 	/* eslint-disable class-methods-use-this */
 
 	class PrimitiveTypeChecker {
@@ -573,8 +573,6 @@
 
 	const createPrimitiveTypeChecker = (collectTypesOnInit = true, enableGetChecker = true) => new PrimitiveTypeChecker(collectTypesOnInit, enableGetChecker);
 
-	/* eslint-disable class-methods-use-this */
-
 	exports.MERGE = MERGE;
 	exports.ARGUMENTS = ARGUMENTS;
 	exports.GET_PROPERTY = GET_PROPERTY;
@@ -586,6 +584,13 @@
 	exports.createPrimitiveTypeChecker = createPrimitiveTypeChecker;
 	exports.getErrorReporter = getErrorReporter;
 	exports.setErrorReporter = setErrorReporter;
+	exports.REPORT_ALL = typeCheckerLevelsStorage_1;
+	exports.REPORT_NEVER = typeCheckerLevelsStorage_2;
+	exports.REPORT_ONCE = typeCheckerLevelsStorage_3;
+	exports.getGlobalReportingLevel = typeCheckerLevelsStorage_6;
+	exports.setGlobalReportingLevel = typeCheckerLevelsStorage_7;
+	exports.getReportingLevel = typeCheckerLevelsStorage_8;
+	exports.setReportingLevel = typeCheckerLevelsStorage_9;
 
 	Object.defineProperty(exports, '__esModule', { value: true });
 
