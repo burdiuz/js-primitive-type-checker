@@ -158,4 +158,5 @@ exports.PrimitiveTypeChecker = PrimitiveTypeChecker;
 exports.createPrimitiveTypeChecker = createPrimitiveTypeChecker;
 exports.getErrorReporter = getErrorReporter;
 exports.setErrorReporter = setErrorReporter;
+exports.default = PrimitiveTypeChecker;
 //# sourceMappingURL=index.js.map

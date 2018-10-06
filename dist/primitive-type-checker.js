@@ -591,6 +591,7 @@
 	exports.setGlobalReportingLevel = typeCheckerLevelsStorage_7;
 	exports.getReportingLevel = typeCheckerLevelsStorage_8;
 	exports.setReportingLevel = typeCheckerLevelsStorage_9;
+	exports.default = PrimitiveTypeChecker;
 
 	Object.defineProperty(exports, '__esModule', { value: true });
 

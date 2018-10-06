@@ -43,3 +43,5 @@ export {
   getReportingLevel,
   setReportingLevel,
 };
+
+export default PrimitiveTypeChecker;
