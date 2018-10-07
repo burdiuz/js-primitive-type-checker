@@ -1,3 +1,5 @@
+
+(function(l, i, v, e) { v = l.createElement(i); v.async = 1; v.src = '//' + (location.host || 'localhost').split(':')[0] + ':35729/livereload.js?snipver=1'; e = l.getElementsByTagName(i)[0]; e.parentNode.insertBefore(v, e)})(document, 'script');
 (function (global, factory) {
 	typeof exports === 'object' && typeof module !== 'undefined' ? factory(exports) :
 	typeof define === 'function' && define.amd ? define(['exports'], factory) :
@@ -449,23 +451,8 @@
 	const SET_PROPERTY = '(SetProperty)';
 	const ARGUMENTS = '(Arguments)';
 	const RETURN_VALUE = '(ReturnValue)';
-	const checkPrimitiveType = (action, storage, target, names, type) => {
-	  if (!type) {
-	    return true;
-	  }
-
-	  const {
-	    lastName
-	  } = names;
-	  const missingType = storage.has(lastName) && !storage.hasValue(lastName, type);
-
-	  if (missingType) {
-	    const errorReporter = getErrorReporter();
-	    errorReporter(action, names.toString(), storage.list(lastName).join(', '), type);
-	  }
-
-	  storage.addFor(lastName, type, target);
-	  return !missingType;
+	const checkPrimitiveType = (storage, key, type) => {
+	  return !storage.has(key) || storage.hasValue(key, type);
 	};
 	const getTypeValue = value => {
 	  if (value === undefined) {
@@ -506,8 +493,27 @@
 	    return getTypeValue(value);
 	  }
 
-	  checkType(action, storage, target, names, type) {
-	    return checkPrimitiveType(action, storage, target, names, type);
+	  checkValueType(action, storage, target, names, type) {
+	    if (!type) {
+	      return true;
+	    }
+
+	    const {
+	      lastName
+	    } = names;
+	    const compatible = this.isTypeCompatible(storage, lastName, type, target);
+
+	    if (!compatible) {
+	      const errorReporter = getErrorReporter();
+	      errorReporter(action, names.toString(), storage.list(lastName).join(', '), type);
+	    }
+
+	    storage.addFor(lastName, type, target);
+	    return compatible;
+	  }
+
+	  isTypeCompatible(storage, key, type) {
+	    return checkPrimitiveType(storage, key, type);
 	  }
 	  /**
 	   * FIXME add function to @actualwave/type-checker-levels-storage to merge configs
@@ -539,12 +545,12 @@
 	    }
 
 	    const type = this.getTypeValue(value);
-	    return this.checkType(GET_PROPERTY, storage, target, names, type);
+	    return this.checkValueType(GET_PROPERTY, storage, target, names, type);
 	  }
 
 	  setProperty(target, names, value, storage) {
 	    const type = this.getTypeValue(value);
-	    return this.checkType(SET_PROPERTY, storage, target, names, type);
+	    return this.checkValueType(SET_PROPERTY, storage, target, names, type);
 	  }
 
 	  arguments(target, names, args, storage) {
@@ -555,7 +561,7 @@
 
 	    for (let index = 0; index < length; index++) {
 	      const type = this.getTypeValue(args[index]);
-	      const agrValid = this.checkType(ARGUMENTS, storage, target, names.clone(index), type);
+	      const agrValid = this.checkValueType(ARGUMENTS, storage, target, names.clone(index), type);
 	      valid = agrValid && valid;
 	    }
 
@@ -566,7 +572,7 @@
 	    const type = this.getTypeValue(value);
 	    const callNames = names.clone();
 	    callNames.appendCustomValue(RETURN_VALUE);
-	    return this.checkType(RETURN_VALUE, storage, target, callNames, type);
+	    return this.checkValueType(RETURN_VALUE, storage, target, callNames, type);
 	  }
 
 	}
