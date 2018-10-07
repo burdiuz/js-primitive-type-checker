@@ -70,7 +70,7 @@ class PrimitiveTypeChecker {
 
     if (!compatible) {
       const errorReporter = getErrorReporter();
-      errorReporter(action, names.toString(), storage.list(lastName).join(', '), type);
+      errorReporter(action, names.toString(), storage.list(lastName), type);
     }
 
     storage.addFor(lastName, type, target);
