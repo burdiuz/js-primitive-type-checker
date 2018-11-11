@@ -14,11 +14,11 @@ Type Checker to use with [Type Checkers library](https://github.com/burdiuz/js-t
 
 Via NPM
 ```bash
-npm install @actualwave/@actualwave/primitive-type-checker --save
+npm install @actualwave/primitive-type-checker --save
 ```
 Or Yarn
 ```bash
-yarn add @actualwave/@actualwave/primitive-type-checker
+yarn add @actualwave/primitive-type-checker
 ```
 
 
