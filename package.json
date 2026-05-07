@@ -1,11 +1,13 @@
 {
   "name": "@actualwave/primitive-type-checker",
-  "description": "Runtime type check for pirimitive value types(uses typeof and identifies arrays).",
-  "version": "0.2.1",
+  "description": "Runtime type check for primitive value types (uses typeof and identifies arrays).",
+  "version": "0.2.3",
   "main": "index.js",
+  "types": "types/index.d.ts",
   "keywords": [
     "js",
-    "javascript"
+    "javascript",
+    "typescript"
   ],
   "homepage": "https://github.com/burdiuz/js-primitive-type-checker",
   "bugs": {
@@ -19,96 +21,44 @@
     "url": "https://github.com/burdiuz/js-primitive-type-checker.git"
   },
   "dependencies": {
-    "@actualwave/has-own": "0.0.1",
-    "@actualwave/type-checker-levels-storage": "0.0.2",
-    "@actualwave/type-checker-simple-reporting": "0.0.2"
+    "@actualwave/type-checker-levels-storage": "0.0.3",
+    "@actualwave/type-checker-simple-reporting": "0.0.3"
   },
   "peerDependencies": {
-    "@actualwave/type-checkers": "^0.2.0"
+    "@actualwave/type-checkers": "^0.2.2"
   },
   "devDependencies": {
-    "@babel/core": "^7.1.2",
-    "@babel/plugin-external-helpers": "^7.0.0",
-    "@babel/plugin-syntax-object-rest-spread": "^7.0.0",
-    "@babel/plugin-transform-flow-strip-types": "^7.0.0",
-    "babel-eslint": "^10.0.1",
-    "babel-loader": "^8.0.4",
-    "babel-plugin-istanbul": "^5.0.1",
-    "babel-plugin-transform-class-properties": "^6.24.1",
-    "babel-plugin-transform-es2015-modules-commonjs": "^6.26.2",
-    "babel-preset-jest": "^23.2.0",
-    "chokidar": "^2.0.4",
-    "eslint": "^5.6.1",
-    "eslint-config-airbnb": "^17.1.0",
-    "eslint-plugin-import": "^2.14.0",
-    "eslint-plugin-jsx-a11y": "^6.1.1",
-    "eslint-plugin-react": "^7.11.1",
-    "flow-bin": "^0.81.0",
-    "husky": "^1.0.1",
-    "jest": "^23.6.0",
-    "lint-staged": "^7.3.0",
-    "prettier": "^1.14.3",
-    "rollup-plugin-babel": "^4.0.3",
-    "rollup-plugin-commonjs": "^9.1.8",
-    "rollup-plugin-json": "^3.1.0",
-    "rollup-plugin-livereload": "^0.6.0",
-    "rollup-plugin-node-resolve": "^3.4.0",
-    "rollup-plugin-serve": "^0.6.0",
-    "rollup-plugin-terser": "^3.0.0"
-  },
-  "lint-staged": {
-    "source/**/*.js": [
-      "prettier --write",
-      "eslint --fix",
-      "git add"
-    ]
-  },
-  "babel": {
-    "env": {
-      "test": {
-        "plugins": [
-          "babel-plugin-transform-es2015-modules-commonjs",
-          "babel-plugin-transform-flow-strip-types",
-          "babel-plugin-transform-class-properties",
-          [
-            "babel-plugin-transform-object-rest-spread",
-            {
-              "useBuiltIns": true
-            }
-          ]
-        ],
-        "presets": [
-          "jest"
-        ]
-      }
-    }
+    "@rollup/plugin-commonjs": "^29.0.2",
+    "@rollup/plugin-node-resolve": "^16.0.3",
+    "@rollup/plugin-terser": "^1.0.0",
+    "@rollup/plugin-typescript": "^12.3.0",
+    "@types/jest": "^30.0.0",
+    "coveralls": "^3.1.1",
+    "jest": "^29.7.0",
+    "rollup": "^4.60.3",
+    "rollup-plugin-copy": "^3.5.0",
+    "ts-jest": "^29.4.9",
+    "tslib": "^2.8.1",
+    "typescript": "^5.9.3"
   },
   "jest": {
+    "transform": { "^.+\\.tsx?$": "ts-jest" },
+    "testEnvironment": "node",
+    "testMatch": ["**/__tests__/**/*.spec.ts"],
     "collectCoverage": true,
-    "coverageReporters": [
-      "json",
-      "lcov"
-    ],
+    "coverageReporters": ["json", "lcov", "text"],
     "coverageDirectory": "coverage",
     "collectCoverageFrom": [
-      "source/**/*.js",
-      "!**/node_modules/**",
-      "!**/vendor/**"
-    ],
-    "modulePathIgnorePatterns": [
-      "\\/\\."
+      "src/**/*.ts",
+      "!src/**/*.spec.ts",
+      "!**/node_modules/**"
     ]
   },
   "scripts": {
-    "start": "npm run build",
-    "build": "rollup --config",
-    "build:watch": "rollup --config --watch \"./source\"",
-    "lint": "./node_modules/.bin/eslint \"source/**/*.js\"",
-    "flow": "./node_modules/.bin/flow",
-    "server": "rollup --config rollup.serve.js",
+    "build": "rollup --config rollup.config.mjs",
+    "build:watch": "rollup --config rollup.config.mjs --watch",
     "test": "jest --colors",
     "test:watch": "jest --colors --watch",
-    "lint-staged": "lint-staged",
-    "precommit": "npm run build && npm run test && npm run lint-staged"
+    "coveralls": "jest --colors && cat coverage/lcov.info | coveralls"
   }
 }
